@@ -47,7 +47,24 @@ router.post('/', async (req, res) => {
        VALUES ($1,$2,$3,$4,$5,$6) RETURNING *`,
       [auction_id, item_id, bidder_id, bid_amount, bid_type || 'live', is_winning || false]
     );
-    res.status(201).json(result.rows[0]);
+    const bid = result.rows[0];
+
+    // Emit real-time bid notification to room lot:<item_id>
+    if (item_id) {
+      const io = req.app.get('io');
+      if (io) {
+        io.to(`lot:${item_id}`).emit('lot:bid', {
+          lot_id: item_id,
+          bid_id: bid.id,
+          bid_amount: bid.bid_amount,
+          bidder_id: bid.bidder_id,
+          auction_id: bid.auction_id,
+          timestamp: bid.created_at || new Date().toISOString(),
+        });
+      }
+    }
+
+    res.status(201).json(bid);
   } catch (err) {
     console.error('Create bid error:', err);
     res.status(500).json({ error: 'Server error' });

@@ -1,11 +1,18 @@
 const router = require('express').Router();
-const { query } = require('../db');
+const { query, pool } = require('../db');
+const { paginatedList } = require('../paginate');
 
-// GET / - list all
+// GET / - list all (paginated when ?page or ?limit provided)
 router.get('/', async (req, res) => {
   try {
-    const result = await query('SELECT * FROM consignors ORDER BY created_at DESC');
-    res.json(result.rows);
+    const result = await paginatedList({
+      pool,
+      table: 'consignors',
+      orderBy: 'created_at DESC',
+      searchColumns: ['name', 'email', 'phone'],
+      req,
+    });
+    res.json(result);
   } catch (err) {
     console.error('List consignors error:', err);
     res.status(500).json({ error: 'Server error' });

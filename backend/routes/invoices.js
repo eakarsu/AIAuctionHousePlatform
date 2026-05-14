@@ -1,10 +1,17 @@
 const router = require('express').Router();
-const { query } = require('../db');
+const { query, pool } = require('../db');
+const { paginatedList } = require('../paginate');
 
 router.get('/', async (req, res) => {
   try {
-    const result = await query('SELECT * FROM invoices ORDER BY created_at DESC');
-    res.json(result.rows);
+    const result = await paginatedList({
+      pool,
+      table: 'invoices',
+      orderBy: 'created_at DESC',
+      searchColumns: ['invoice_number', 'status'],
+      req,
+    });
+    res.json(result);
   } catch (err) {
     console.error('List invoices error:', err);
     res.status(500).json({ error: 'Server error' });

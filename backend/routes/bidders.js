@@ -1,10 +1,17 @@
 const router = require('express').Router();
-const { query } = require('../db');
+const { query, pool } = require('../db');
+const { paginatedList } = require('../paginate');
 
 router.get('/', async (req, res) => {
   try {
-    const result = await query('SELECT * FROM bidders ORDER BY created_at DESC');
-    res.json(result.rows);
+    const result = await paginatedList({
+      pool,
+      table: 'bidders',
+      orderBy: 'created_at DESC',
+      searchColumns: ['name', 'email', 'paddle_number'],
+      req,
+    });
+    res.json(result);
   } catch (err) {
     console.error('List bidders error:', err);
     res.status(500).json({ error: 'Server error' });

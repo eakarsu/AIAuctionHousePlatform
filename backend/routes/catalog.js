@@ -1,11 +1,45 @@
 const router = require('express').Router();
 const { query } = require('../db');
 
-// GET / - list all
+// GET / - list all with optional pagination and search
 router.get('/', async (req, res) => {
   try {
-    const result = await query('SELECT * FROM catalog_entries ORDER BY created_at DESC');
-    res.json(result.rows);
+    const page = Math.max(1, parseInt(req.query.page) || 1);
+    const limit = Math.min(100, Math.max(1, parseInt(req.query.limit) || 20));
+    const offset = (page - 1) * limit;
+    const search = req.query.search ? req.query.search.trim() : null;
+
+    const params = [];
+    let whereClause = '';
+
+    if (search) {
+      params.push(`%${search}%`);
+      whereClause = `WHERE catalog_text ILIKE $${params.length}`;
+    }
+
+    const countResult = await query(
+      `SELECT COUNT(*) FROM catalog_entries ${whereClause}`,
+      params
+    );
+    const total = parseInt(countResult.rows[0].count);
+
+    params.push(limit);
+    params.push(offset);
+
+    const result = await query(
+      `SELECT * FROM catalog_entries ${whereClause} ORDER BY created_at DESC LIMIT $${params.length - 1} OFFSET $${params.length}`,
+      params
+    );
+
+    res.json({
+      data: result.rows,
+      pagination: {
+        page,
+        limit,
+        total,
+        total_pages: Math.ceil(total / limit),
+      },
+    });
   } catch (err) {
     console.error('List catalog entries error:', err);
     res.status(500).json({ error: 'Server error' });

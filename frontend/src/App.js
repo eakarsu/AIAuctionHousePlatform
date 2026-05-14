@@ -20,6 +20,19 @@ import AuthenticityPage from './pages/ai/AuthenticityPage';
 import MarketingPage from './pages/ai/MarketingPage';
 import BuyerMatchingPage from './pages/ai/BuyerMatchingPage';
 import MarketTrendsPage from './pages/ai/MarketTrendsPage';
+import SimilarityMatcherPage from './pages/ai/SimilarityMatcherPage';
+import BiddingAnalyticsPage from './pages/ai/BiddingAnalyticsPage';
+import ProvenanceVerificationPage from './pages/ai/ProvenanceVerificationPage';
+import MultiLanguageCatalogPage from './pages/ai/MultiLanguageCatalogPage';
+import ConditionReportPage from './pages/ai/ConditionReportPage';
+import BuyerPreferencePage from './pages/ai/BuyerPreferencePage';
+import InsuranceValuationPage from './pages/ai/InsuranceValuationPage';
+import PhotoEnhancementPage from './pages/ai/PhotoEnhancementPage';
+import DynamicReservePricingPage from './pages/ai/DynamicReservePricingPage';
+import PredictFinalPricePage from './pages/ai/PredictFinalPricePage';
+import ShillBiddingDetectionPage from './pages/ai/ShillBiddingDetectionPage';
+import ExternalAuctionSearchPage from './pages/ai/ExternalAuctionSearchPage';
+import InsurancePolicyRecommendationPage from './pages/ai/InsurancePolicyRecommendationPage';
 import PhotographyPage from './pages/PhotographyPage';
 import CatalogPage from './pages/CatalogPage';
 import CampaignsPage from './pages/CampaignsPage';
@@ -58,6 +71,19 @@ function App() {
       <Route path="/ai/marketing" element={<ProtectedRoute><MarketingPage /></ProtectedRoute>} />
       <Route path="/ai/buyer-matching" element={<ProtectedRoute><BuyerMatchingPage /></ProtectedRoute>} />
       <Route path="/ai/market-trends" element={<ProtectedRoute><MarketTrendsPage /></ProtectedRoute>} />
+      <Route path="/ai/similarity-matcher" element={<ProtectedRoute><SimilarityMatcherPage /></ProtectedRoute>} />
+      <Route path="/ai/bidding-analytics" element={<ProtectedRoute><BiddingAnalyticsPage /></ProtectedRoute>} />
+      <Route path="/ai/provenance-verification" element={<ProtectedRoute><ProvenanceVerificationPage /></ProtectedRoute>} />
+      <Route path="/ai/multi-language-catalog" element={<ProtectedRoute><MultiLanguageCatalogPage /></ProtectedRoute>} />
+      <Route path="/ai/condition-report" element={<ProtectedRoute><ConditionReportPage /></ProtectedRoute>} />
+      <Route path="/ai/buyer-preference" element={<ProtectedRoute><BuyerPreferencePage /></ProtectedRoute>} />
+      <Route path="/ai/insurance-valuation" element={<ProtectedRoute><InsuranceValuationPage /></ProtectedRoute>} />
+      <Route path="/ai/photo-enhancement" element={<ProtectedRoute><PhotoEnhancementPage /></ProtectedRoute>} />
+      <Route path="/ai/dynamic-reserve-pricing" element={<ProtectedRoute><DynamicReservePricingPage /></ProtectedRoute>} />
+      <Route path="/ai/predict-final-price" element={<ProtectedRoute><PredictFinalPricePage /></ProtectedRoute>} />
+      <Route path="/ai/shill-bidding-detection" element={<ProtectedRoute><ShillBiddingDetectionPage /></ProtectedRoute>} />
+      <Route path="/ai/external-auction-search" element={<ProtectedRoute><ExternalAuctionSearchPage /></ProtectedRoute>} />
+      <Route path="/ai/insurance-policy-recommendation" element={<ProtectedRoute><InsurancePolicyRecommendationPage /></ProtectedRoute>} />
       <Route path="/photography" element={<ProtectedRoute><PhotographyPage /></ProtectedRoute>} />
       <Route path="/catalog" element={<ProtectedRoute><CatalogPage /></ProtectedRoute>} />
       <Route path="/campaigns" element={<ProtectedRoute><CampaignsPage /></ProtectedRoute>} />
