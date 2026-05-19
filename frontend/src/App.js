@@ -40,6 +40,7 @@ import PaymentsPage from './pages/PaymentsPage';
 import UnsoldLotsPage from './pages/UnsoldLotsPage';
 import AppraisalsPage from './pages/AppraisalsPage';
 import EstatesPage from './pages/EstatesPage';
+import CustomViewsPage from './pages/CustomViewsPage';
 
 function ProtectedRoute({ children }) {
   const token = localStorage.getItem('token');
@@ -91,6 +92,7 @@ function App() {
       <Route path="/unsold-lots" element={<ProtectedRoute><UnsoldLotsPage /></ProtectedRoute>} />
       <Route path="/appraisals" element={<ProtectedRoute><AppraisalsPage /></ProtectedRoute>} />
       <Route path="/estates" element={<ProtectedRoute><EstatesPage /></ProtectedRoute>} />
+      <Route path="/custom-views" element={<ProtectedRoute><CustomViewsPage /></ProtectedRoute>} />
     </Routes>
   );
 }

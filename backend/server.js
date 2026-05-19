@@ -105,6 +105,7 @@ app.use('/api/appraisals', require('./routes/appraisals'));
 app.use('/api/estates', require('./routes/estates'));
 app.use('/api/lots', require('./routes/lots'));
 app.use('/api/analytics', require('./routes/analyticsAuction'));
+app.use('/api/custom-views', require('./routes/customViews'));
 
 // Health check
 app.get('/api/health', (req, res) => {

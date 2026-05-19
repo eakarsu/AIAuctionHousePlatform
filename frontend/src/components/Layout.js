@@ -43,6 +43,7 @@ const navSections = [
     title: 'ANALYTICS',
     items: [
       { to: '/reports', icon: '📊', label: 'Reports' },
+      { to: '/custom-views', icon: '🏛️', label: 'Auction Views' },
     ],
   },
   {
