@@ -11,6 +11,7 @@ const { default: rateLimit, ipKeyGenerator } = require('express-rate-limit');
 const app = express();
 const httpServer = http.createServer(app);
 const PORT = process.env.BACKEND_PORT || 4000;
+if (process.env.NODE_ENV === 'production' && !process.env.CORS_ORIGINS && !process.env.FRONTEND_URL) throw new Error('CORS_ORIGINS or FRONTEND_URL is required in production');
 
 // Build allowed origins from env. CORS_ORIGINS is a comma-separated list,
 // otherwise fall back to FRONTEND_URL or localhost dev defaults.
@@ -95,7 +96,7 @@ app.use('/api/conditions', require('./routes/conditions'));
 app.use('/api/storage', require('./routes/storage'));
 app.use('/api/compliance', require('./routes/compliance'));
 app.use('/api/reports', require('./routes/reports'));
-app.use('/api/ai', aiRateLimiter, require('./routes/ai'));
+if (process.env.ENABLE_EXPERIMENTAL_AI === 'true') app.use('/api/ai', aiRateLimiter, require('./routes/ai'));
 app.use('/api/photography', require('./routes/photography'));
 app.use('/api/catalog', require('./routes/catalog'));
 app.use('/api/campaigns', require('./routes/campaigns'));
@@ -106,6 +107,7 @@ app.use('/api/estates', require('./routes/estates'));
 app.use('/api/lots', require('./routes/lots'));
 app.use('/api/analytics', require('./routes/analyticsAuction'));
 app.use('/api/custom-views', require('./routes/customViews'));
+app.use('/api/governed-auction', require('./routes/governedAuction'));
 
 // Health check
 app.get('/api/health', (req, res) => {
@@ -118,19 +120,3 @@ httpServer.listen(PORT, () => {
 });
 
 module.exports = { app, io };
-
-// BATCH_00_AUDIT_MOUNTS
-app.use('/api/auction-stream', require('./routes/auctionStream'));
-app.use('/api/final-price-estimator', require('./routes/finalPriceEstimator'));
-app.use('/api/provenance-research', require('./routes/provenanceResearch'));
-app.use('/api/shill-detection', require('./routes/shillDetection'));
-app.use('/api/auction-platform-bridge', require('./routes/auctionPlatformBridge'));
-
-// === Batch 00 Gaps & Frontend Mounts ===
-app.use('/api/gap-ai-dynamic-reserve-pricing-optimization', require('./routes/gap_ai_dynamic_reserve_pricing_optimization'));
-app.use('/api/gap-ai-shill-bidding-fake-bidder', require('./routes/gap_ai_shill_bidding_fake_bidder'));
-app.use('/api/gap-ai-absentee-bid-coaching-collectors', require('./routes/gap_ai_absentee_bid_coaching_collectors'));
-app.use('/api/gap-limited-live-auction-video-streaming', require('./routes/gap_limited_live_auction_video_streaming'));
-app.use('/api/gap-bridges-major-auction-platforms-invaluable', require('./routes/gap_bridges_major_auction_platforms_invaluable'));
-app.use('/api/gap-insurance-policy-management-module', require('./routes/gap_insurance_policy_management_module'));
-app.use('/api/gap-outbound-webhooks-consignor-buyer-events', require('./routes/gap_outbound_webhooks_consignor_buyer_events'));
