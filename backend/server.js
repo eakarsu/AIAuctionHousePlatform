@@ -97,6 +97,7 @@ app.use('/api/storage', require('./routes/storage'));
 app.use('/api/compliance', require('./routes/compliance'));
 app.use('/api/reports', require('./routes/reports'));
 if (process.env.ENABLE_EXPERIMENTAL_AI === 'true') app.use('/api/ai', aiRateLimiter, require('./routes/ai'));
+app.use('/api/runtime-ai', require('./routes/runtimeAi'));
 app.use('/api/photography', require('./routes/photography'));
 app.use('/api/catalog', require('./routes/catalog'));
 app.use('/api/campaigns', require('./routes/campaigns'));
