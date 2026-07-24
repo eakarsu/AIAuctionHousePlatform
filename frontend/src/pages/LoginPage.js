@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../api';
 
+const demoEmail = import.meta.env.VITE_ENABLE_DEMO_CREDENTIAL_AUTOFILL === 'true' ? import.meta.env.VITE_DEMO_EMAIL || '' : '';
+const demoPassword = import.meta.env.VITE_ENABLE_DEMO_CREDENTIAL_AUTOFILL === 'true' ? import.meta.env.VITE_DEMO_PASSWORD || '' : '';
+
 function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -25,12 +28,12 @@ function LoginPage() {
   };
 
   const handleQuickLogin = async () => {
-    setEmail('admin@auction.com');
-    setPassword('admin123');
+    setEmail(demoEmail);
+    setPassword(demoPassword);
     setError('');
     setLoading(true);
     try {
-      const res = await api.post('/auth/login', { email: 'admin@auction.com', password: 'admin123' });
+      const res = await api.post('/auth/login', { email: demoEmail, password: demoPassword });
       localStorage.setItem('token', res.data.token);
       navigate('/dashboard');
     } catch (err) {
@@ -74,7 +77,7 @@ function LoginPage() {
             {loading ? 'Signing in...' : 'Sign In'}
           </button>
         </form>
-        <button className="quick-login-btn" onClick={handleQuickLogin} disabled={loading}>
+        <button className="quick-login-btn" onClick={handleQuickLogin} disabled={loading || !demoEmail || !demoPassword}>
           Quick Login (Demo Account)
         </button>
       </div>
