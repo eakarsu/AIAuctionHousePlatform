@@ -27,20 +27,10 @@ function LoginPage() {
     }
   };
 
-  const handleQuickLogin = async () => {
+  const handleQuickLogin = () => {
     setEmail(demoEmail);
     setPassword(demoPassword);
     setError('');
-    setLoading(true);
-    try {
-      const res = await api.post('/auth/login', { email: demoEmail, password: demoPassword });
-      localStorage.setItem('token', res.data.token);
-      navigate('/dashboard');
-    } catch (err) {
-      setError(err.response?.data?.error || 'Quick login failed.');
-    } finally {
-      setLoading(false);
-    }
   };
 
   return (
@@ -78,7 +68,7 @@ function LoginPage() {
           </button>
         </form>
         <button className="quick-login-btn" onClick={handleQuickLogin} disabled={loading || !demoEmail || !demoPassword}>
-          Quick Login (Demo Account)
+          Auto Fill Demo Credentials
         </button>
       </div>
     </div>
