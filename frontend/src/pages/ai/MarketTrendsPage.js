@@ -1,10 +1,14 @@
+
+import FullAIExamples, { useFullAIExamples } from "../../components/FullAIExamples.jsx";
 import React, { useState } from 'react';
-import api from '../../api';
+import api, { listRows } from '../../api';
 import AIResultRenderer from '../../components/AIResultRenderer';
 
 const categories = ['Fine Art', 'Jewelry', 'Antiques', 'Vehicles', 'Wine & Spirits', 'Watches', 'Furniture', 'Sculptures', 'Asian Art', 'Contemporary Art', 'Old Masters', 'Decorative Arts', 'Silver', 'Ceramics', 'Books & Manuscripts'];
 
 function MarketTrendsPage() {
+  const fullAIExamples = useFullAIExamples();
+
   const [category, setCategory] = useState('Fine Art');
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -17,7 +21,7 @@ function MarketTrendsPage() {
       let soldItems = [];
       try {
         const itemsRes = await api.get('/items');
-        soldItems = itemsRes.data
+        soldItems = listRows(itemsRes.data)
           .filter(i => i.status === 'sold' && i.category === category)
           .map(i => ({
             title: i.title,
@@ -43,10 +47,10 @@ function MarketTrendsPage() {
       <div className="page-header"><div><h1 className="page-title">AI Market Trends</h1><p className="page-subtitle">Analyze market trends and predict future pricing patterns</p></div></div>
       <div className="ai-form">
         <h3 className="ai-form-title">Select Category for Analysis</h3>
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} data-full-ai-workspace="MarketTrendsPage"><FullAIExamples controller={fullAIExamples} disabled={Boolean(loading)} />
           <div className="form-group">
             <label>Category</label>
-            <select className="form-select" value={category} onChange={e => setCategory(e.target.value)}>
+            <select className="form-select" value={category} onChange={e => setCategory(e.target.value)} data-full-ai-field={fullAIExamples.bind({ current: category, change: e => setCategory(e.target.value), label: "category", manual: false, json: false, sample: 'Fine Art' }, "p1-2012", undefined)}>
               {categories.map(c => <option key={c}>{c}</option>)}
             </select>
           </div>

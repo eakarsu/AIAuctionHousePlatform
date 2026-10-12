@@ -1,8 +1,12 @@
+
+import FullAIExamples, { useFullAIExamples } from "../../components/FullAIExamples.jsx";
 import React, { useState } from 'react';
 import api from '../../api';
 import AIResultRenderer from '../../components/AIResultRenderer';
 
 function SimilarityMatcherPage() {
+  const fullAIExamples = useFullAIExamples();
+
   const [form, setForm] = useState({
     title: '',
     category: 'Fine Art',
@@ -63,7 +67,7 @@ function SimilarityMatcherPage() {
       </div>
       <div className="ai-form">
         <h3 className="ai-form-title">Incoming Item</h3>
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} data-full-ai-workspace="SimilarityMatcherPage"><FullAIExamples controller={fullAIExamples} disabled={Boolean(loading)} />
           <div className="form-group">
             <label>Title</label>
             <input
@@ -71,7 +75,7 @@ function SimilarityMatcherPage() {
               value={form.title}
               onChange={(e) => setField('title', e.target.value)}
               placeholder="e.g., Bronze Tang Dynasty Horse"
-              required
+              required data-full-ai-field={fullAIExamples.bind({ current: form.title, change: (e) => setField('title', e.target.value), label: "form.title", manual: false, json: false, sample: '' }, "p1-2146", undefined)}
             />
           </div>
           <div className="form-row">
@@ -80,7 +84,7 @@ function SimilarityMatcherPage() {
               <select
                 className="form-select"
                 value={form.category}
-                onChange={(e) => setField('category', e.target.value)}
+                onChange={(e) => setField('category', e.target.value)} data-full-ai-field={fullAIExamples.bind({ current: form.category, change: (e) => setField('category', e.target.value), label: "form.category", manual: false, json: false, sample: 'Fine Art' }, "p1-2534", undefined)}
               >
                 {[
                   'Fine Art', 'Jewelry', 'Antiques', 'Vehicles', 'Wine & Spirits',
@@ -97,7 +101,7 @@ function SimilarityMatcherPage() {
               <input
                 className="form-input"
                 value={form.medium}
-                onChange={(e) => setField('medium', e.target.value)}
+                onChange={(e) => setField('medium', e.target.value)} data-full-ai-field={fullAIExamples.bind({ current: form.medium, change: (e) => setField('medium', e.target.value), label: "form.medium", manual: false, json: false, sample: '' }, "p1-3245", undefined)}
               />
             </div>
             <div className="form-group">
@@ -105,7 +109,7 @@ function SimilarityMatcherPage() {
               <input
                 className="form-input"
                 value={form.dimensions}
-                onChange={(e) => setField('dimensions', e.target.value)}
+                onChange={(e) => setField('dimensions', e.target.value)} data-full-ai-field={fullAIExamples.bind({ current: form.dimensions, change: (e) => setField('dimensions', e.target.value), label: "form.dimensions", manual: false, json: false, sample: '' }, "p1-3527", undefined)}
               />
             </div>
           </div>
@@ -115,7 +119,7 @@ function SimilarityMatcherPage() {
               className="form-textarea"
               value={form.description}
               onChange={(e) => setField('description', e.target.value)}
-              placeholder="Describe condition, provenance, and any distinguishing features..."
+              placeholder="Describe condition, provenance, and any distinguishing features..." data-full-ai-field={fullAIExamples.bind({ current: form.description, change: (e) => setField('description', e.target.value), label: "form.description", manual: false, json: false, sample: '' }, "p1-3829", undefined)}
             />
           </div>
           <div className="form-group">
@@ -125,7 +129,7 @@ function SimilarityMatcherPage() {
               value={pastLotsText}
               onChange={(e) => setPastLotsText(e.target.value)}
               placeholder={'Bronze Han Dynasty Horse|18000|12000|18000|Asian Art\nTang Dynasty Earthenware Horse|9500|8000|12000|Asian Art'}
-              rows={5}
+              rows={5} data-full-ai-field={fullAIExamples.bind({ current: pastLotsText, change: (e) => setPastLotsText(e.target.value), label: "pastLotsText", manual: false, json: false, sample: '' }, "p1-4258", undefined)}
             />
           </div>
           {error && <div className="login-error">{error}</div>}

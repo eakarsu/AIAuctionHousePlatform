@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import api from '../api';
+import api, { listRows } from '../api';
 
 const categories = ['Fine Art', 'Jewelry', 'Antiques', 'Vehicles', 'Wine & Spirits', 'Watches', 'Furniture', 'Sculptures', 'Asian Art', 'Contemporary Art', 'Old Masters', 'Decorative Arts', 'Silver', 'Ceramics', 'Books & Manuscripts'];
 const conditions = ['Excellent', 'Good', 'Fair', 'Poor'];
@@ -17,7 +17,7 @@ function ItemsPage() {
   const [loading, setLoading] = useState(true);
 
   const fetchData = async () => {
-    try { const res = await api.get('/items'); setRecords(res.data); setFiltered(res.data); } catch (err) { console.error(err); }
+    try { const res = await api.get('/items'); setRecords(listRows(res.data)); setFiltered(listRows(res.data)); } catch (err) { console.error(err); }
     setLoading(false);
   };
 
@@ -92,6 +92,7 @@ function ItemsPage() {
             <div className="detail-panel-actions">
               <button className="btn btn-primary" onClick={() => openEdit(selected)}>Edit</button>
               <button className="btn btn-danger" onClick={() => handleDelete(selected.id)}>Delete</button>
+              <button className="btn btn-secondary" onClick={() => setSelected(null)}>Cancel</button>
             </div>
           </div>
         </>

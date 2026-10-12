@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import api from '../api';
+import api, { listRows } from '../api';
 
 const emptyForm = { name: '', email: '', phone: '', address: '', commission_rate: '', contract_status: 'active', notes: '' };
 
@@ -16,8 +16,8 @@ function ConsignorsPage() {
   const fetchData = async () => {
     try {
       const res = await api.get('/consignors');
-      setRecords(res.data);
-      setFiltered(res.data);
+      setRecords(listRows(res.data));
+      setFiltered(listRows(res.data));
     } catch (err) { console.error(err); }
     setLoading(false);
   };
@@ -115,6 +115,7 @@ function ConsignorsPage() {
             <div className="detail-panel-actions">
               <button className="btn btn-primary" onClick={() => openEdit(selected)}>Edit</button>
               <button className="btn btn-danger" onClick={() => handleDelete(selected.id)}>Delete</button>
+              <button className="btn btn-secondary" onClick={() => setSelected(null)}>Cancel</button>
             </div>
           </div>
         </>

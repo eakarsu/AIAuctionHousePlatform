@@ -2,9 +2,6 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../api';
 
-const demoEmail = import.meta.env.VITE_ENABLE_DEMO_CREDENTIAL_AUTOFILL === 'true' ? import.meta.env.VITE_DEMO_EMAIL || '' : '';
-const demoPassword = import.meta.env.VITE_ENABLE_DEMO_CREDENTIAL_AUTOFILL === 'true' ? import.meta.env.VITE_DEMO_PASSWORD || '' : '';
-
 function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -27,10 +24,18 @@ function LoginPage() {
     }
   };
 
-  const handleQuickLogin = () => {
-    setEmail(demoEmail);
-    setPassword(demoPassword);
+  const handleDemoLogin = async () => {
     setError('');
+    setLoading(true);
+    try {
+      const res = await api.post('/auth/demo');
+      localStorage.setItem('token', res.data.token);
+      navigate('/dashboard');
+    } catch (err) {
+      setError(err.response?.data?.error || 'Demo login failed. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -67,8 +72,8 @@ function LoginPage() {
             {loading ? 'Signing in...' : 'Sign In'}
           </button>
         </form>
-        <button className="quick-login-btn" onClick={handleQuickLogin} disabled={loading || !demoEmail || !demoPassword}>
-          Auto Fill Demo Credentials
+        <button type="button" className="quick-login-btn" onClick={handleDemoLogin} disabled={loading}>
+          {loading ? 'Signing in...' : 'Log In as Demo'}
         </button>
       </div>
     </div>

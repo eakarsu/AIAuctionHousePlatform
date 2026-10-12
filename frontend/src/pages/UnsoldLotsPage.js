@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import api from '../api';
+import api, { listRows } from '../api';
 
 const emptyForm = { item_id: '', auction_id: '', reason: '', action_taken: 'pending_review', reoffer_auction_id: '', buy_now_price: '', return_to_consignor: false, notes: '' };
 
@@ -14,7 +14,7 @@ function UnsoldLotsPage() {
   const [loading, setLoading] = useState(true);
 
   const fetchData = async () => {
-    try { const res = await api.get('/unsold-lots'); setRecords(res.data); setFiltered(res.data); } catch (err) { console.error(err); }
+    try { const res = await api.get('/unsold-lots'); setRecords(listRows(res.data)); setFiltered(listRows(res.data)); } catch (err) { console.error(err); }
     setLoading(false);
   };
   useEffect(() => { fetchData(); }, []);
@@ -66,7 +66,7 @@ function UnsoldLotsPage() {
             <div className="detail-field" key={l}><div className="detail-field-label">{l}</div><div className="detail-field-value">{v || '-'}</div></div>
           ))}
         </div>
-        <div className="detail-panel-actions"><button className="btn btn-primary" onClick={() => openEdit(selected)}>Edit</button><button className="btn btn-danger" onClick={() => handleDelete(selected.id)}>Delete</button></div>
+        <div className="detail-panel-actions"><button className="btn btn-primary" onClick={() => openEdit(selected)}>Edit</button><button className="btn btn-danger" onClick={() => handleDelete(selected.id)}>Delete</button><button className="btn btn-secondary" onClick={() => setSelected(null)}>Cancel</button></div>
       </div></>)}
 
       {showModal && (<div className="modal-overlay" onClick={() => setShowModal(false)}><div className="modal-content" onClick={e => e.stopPropagation()}>

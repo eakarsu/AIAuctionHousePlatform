@@ -1,8 +1,12 @@
+
+import FullAIExamples, { useFullAIExamples } from "../../components/FullAIExamples.jsx";
 import React, { useState } from 'react';
 import api from '../../api';
 import AIResultRenderer from '../../components/AIResultRenderer';
 
 function BiddingAnalyticsPage() {
+  const fullAIExamples = useFullAIExamples();
+
   const [form, setForm] = useState({
     lot_title: '',
     category: 'Fine Art',
@@ -64,14 +68,14 @@ function BiddingAnalyticsPage() {
       </div>
       <div className="ai-form">
         <h3 className="ai-form-title">Lot &amp; Live Bid State</h3>
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} data-full-ai-workspace="BiddingAnalyticsPage"><FullAIExamples controller={fullAIExamples} disabled={Boolean(loading)} />
           <div className="form-group">
             <label>Lot Title</label>
             <input
               className="form-input"
               value={form.lot_title}
               onChange={(e) => setField('lot_title', e.target.value)}
-              required
+              required data-full-ai-field={fullAIExamples.bind({ current: form.lot_title, change: (e) => setField('lot_title', e.target.value), label: "form.lot_title", manual: false, json: false, sample: '' }, "p1-2174", undefined)}
             />
           </div>
           <div className="form-row">
@@ -80,7 +84,7 @@ function BiddingAnalyticsPage() {
               <input
                 className="form-input"
                 value={form.category}
-                onChange={(e) => setField('category', e.target.value)}
+                onChange={(e) => setField('category', e.target.value)} data-full-ai-field={fullAIExamples.bind({ current: form.category, change: (e) => setField('category', e.target.value), label: "form.category", manual: false, json: false, sample: 'Fine Art' }, "p1-2510", undefined)}
               />
             </div>
             <div className="form-group">
@@ -89,7 +93,7 @@ function BiddingAnalyticsPage() {
                 type="number"
                 className="form-input"
                 value={form.current_high_bid}
-                onChange={(e) => setField('current_high_bid', e.target.value)}
+                onChange={(e) => setField('current_high_bid', e.target.value)} data-full-ai-field={fullAIExamples.bind({ current: form.current_high_bid, change: (e) => setField('current_high_bid', e.target.value), label: "form.current_high_bid", manual: false, json: false, sample: '' }, "p1-2808", undefined)}
               />
             </div>
             <div className="form-group">
@@ -98,7 +102,7 @@ function BiddingAnalyticsPage() {
                 type="number"
                 className="form-input"
                 value={form.estimate_low}
-                onChange={(e) => setField('estimate_low', e.target.value)}
+                onChange={(e) => setField('estimate_low', e.target.value)} data-full-ai-field={fullAIExamples.bind({ current: form.estimate_low, change: (e) => setField('estimate_low', e.target.value), label: "form.estimate_low", manual: false, json: false, sample: '' }, "p1-3142", undefined)}
               />
             </div>
             <div className="form-group">
@@ -107,7 +111,7 @@ function BiddingAnalyticsPage() {
                 type="number"
                 className="form-input"
                 value={form.estimate_high}
-                onChange={(e) => setField('estimate_high', e.target.value)}
+                onChange={(e) => setField('estimate_high', e.target.value)} data-full-ai-field={fullAIExamples.bind({ current: form.estimate_high, change: (e) => setField('estimate_high', e.target.value), label: "form.estimate_high", manual: false, json: false, sample: '' }, "p1-3469", undefined)}
               />
             </div>
           </div>
@@ -118,7 +122,7 @@ function BiddingAnalyticsPage() {
               value={bidsText}
               onChange={(e) => setBidsText(e.target.value)}
               placeholder={'2025-05-02T14:00:00Z|B-001|1000\n2025-05-02T14:00:14Z|B-014|1100\n2025-05-02T14:00:29Z|B-001|1200'}
-              rows={6}
+              rows={6} data-full-ai-field={fullAIExamples.bind({ current: bidsText, change: (e) => setBidsText(e.target.value), label: "bidsText", manual: false, json: false, sample: '' }, "p1-3843", undefined)}
             />
           </div>
           {error && <div className="login-error">{error}</div>}

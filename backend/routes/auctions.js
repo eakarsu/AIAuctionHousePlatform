@@ -1,44 +1,18 @@
 const router = require('express').Router();
-const { query } = require('../db');
+const { query, pool } = require('../db');
+const { paginatedList } = require('../paginate');
 
+// Raw array by default for existing clients; opt into pagination with ?page or ?limit.
 router.get('/', async (req, res) => {
   try {
-    const page = Math.max(1, parseInt(req.query.page) || 1);
-    const limit = Math.min(100, Math.max(1, parseInt(req.query.limit) || 20));
-    const offset = (page - 1) * limit;
-    const search = req.query.search ? req.query.search.trim() : null;
-
-    const params = [];
-    let whereClause = '';
-
-    if (search) {
-      params.push(`%${search}%`);
-      whereClause = `WHERE (title ILIKE $${params.length} OR description ILIKE $${params.length})`;
-    }
-
-    const countResult = await query(
-      `SELECT COUNT(*) FROM auctions ${whereClause}`,
-      params
-    );
-    const total = parseInt(countResult.rows[0].count);
-
-    params.push(limit);
-    params.push(offset);
-
-    const result = await query(
-      `SELECT * FROM auctions ${whereClause} ORDER BY start_date DESC LIMIT $${params.length - 1} OFFSET $${params.length}`,
-      params
-    );
-
-    res.json({
-      data: result.rows,
-      pagination: {
-        page,
-        limit,
-        total,
-        total_pages: Math.ceil(total / limit),
-      },
+    const result = await paginatedList({
+      pool,
+      table: 'auctions',
+      orderBy: 'start_date DESC',
+      searchColumns: ['title', 'description'],
+      req,
     });
+    res.json(result);
   } catch (err) {
     console.error('List auctions error:', err);
     res.status(500).json({ error: 'Server error' });

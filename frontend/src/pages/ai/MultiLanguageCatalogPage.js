@@ -1,3 +1,5 @@
+
+import FullAIExamples, { useFullAIExamples } from "../../components/FullAIExamples.jsx";
 import React, { useState } from 'react';
 import api from '../../api';
 import AIResultRenderer from '../../components/AIResultRenderer';
@@ -8,6 +10,8 @@ const ALL_LANGS = [
 ];
 
 function MultiLanguageCatalogPage() {
+  const fullAIExamples = useFullAIExamples();
+
   const [lotTitle, setLotTitle] = useState('');
   const [englishDescription, setEnglishDescription] = useState('');
   const [targetLanguages, setTargetLanguages] = useState(
@@ -51,11 +55,11 @@ function MultiLanguageCatalogPage() {
       </div>
       <div className="ai-form">
         <h3 className="ai-form-title">Source &amp; Target Languages</h3>
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} data-full-ai-workspace="MultiLanguageCatalogPage"><FullAIExamples controller={fullAIExamples} disabled={Boolean(loading)} />
           <div className="form-group">
             <label>Lot Title (English)</label>
             <input className="form-input" value={lotTitle}
-              onChange={(e) => setLotTitle(e.target.value)} required />
+              onChange={(e) => setLotTitle(e.target.value)} required data-full-ai-field={fullAIExamples.bind({ current: lotTitle, change: (e) => setLotTitle(e.target.value), label: "lotTitle", manual: false, json: false, sample: '' }, "p1-1847", undefined)} />
           </div>
           <div className="form-group">
             <label>English Description</label>
@@ -63,7 +67,7 @@ function MultiLanguageCatalogPage() {
               value={englishDescription}
               onChange={(e) => setEnglishDescription(e.target.value)}
               placeholder="Paste the English catalog copy you want translated..."
-              required />
+              required data-full-ai-field={fullAIExamples.bind({ current: englishDescription, change: (e) => setEnglishDescription(e.target.value), label: "englishDescription", manual: false, json: false, sample: '' }, "p1-2081", undefined)} />
           </div>
           <div className="form-group">
             <label>Target Languages</label>

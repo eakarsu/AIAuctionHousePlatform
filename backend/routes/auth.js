@@ -4,6 +4,20 @@ const jwt = require('jsonwebtoken');
 const { query } = require('../db');
 const { authenticateToken, JWT_SECRET } = require('../middleware/auth');
 
+const createSession = (user) => ({
+  token: jwt.sign(
+    { id: user.id, email: user.email, name: user.name, role: user.role },
+    JWT_SECRET,
+    { expiresIn: '24h' }
+  ),
+  user: { id: user.id, email: user.email, name: user.name, role: user.role },
+});
+
+const demoCredentials = () => ({
+  email: process.env.DEMO_EMAIL || process.env.SEED_ADMIN_EMAIL || process.env.ADMIN_EMAIL || process.env.DEFAULT_EMAIL || 'admin@auction.com',
+  password: process.env.DEMO_PASSWORD || process.env.SEED_ADMIN_PASSWORD || process.env.ADMIN_PASSWORD || process.env.DEFAULT_PASSWORD || '',
+});
+
 // POST /login
 router.post('/login', async (req, res) => {
   try {
@@ -23,18 +37,29 @@ router.post('/login', async (req, res) => {
       return res.status(401).json({ error: 'Invalid credentials' });
     }
 
-    const token = jwt.sign(
-      { id: user.id, email: user.email, name: user.name, role: user.role },
-      JWT_SECRET,
-      { expiresIn: '24h' }
-    );
-
-    res.json({
-      token,
-      user: { id: user.id, email: user.email, name: user.name, role: user.role },
-    });
+    res.json(createSession(user));
   } catch (err) {
     console.error('Login error:', err);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// POST /demo — local one-click login using the configured seeded account.
+router.post('/demo', async (_req, res) => {
+  if (process.env.NODE_ENV === 'production') return res.status(404).json({ error: 'Not found' });
+  try {
+    const { email, password } = demoCredentials();
+    if (!password) return res.status(503).json({ error: 'Demo login is not configured on this server.' });
+
+    const result = await query('SELECT * FROM users WHERE email = $1', [email]);
+    const user = result.rows[0];
+    if (!user || !(await bcrypt.compare(password, user.password))) {
+      return res.status(503).json({ error: 'The configured demo account is unavailable.' });
+    }
+
+    res.json(createSession(user));
+  } catch (err) {
+    console.error('Demo login error:', err);
     res.status(500).json({ error: 'Server error' });
   }
 });

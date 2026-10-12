@@ -1,8 +1,12 @@
+
+import FullAIExamples, { useFullAIExamples } from "../../components/FullAIExamples.jsx";
 import React, { useState } from 'react';
 import api from '../../api';
 import AIResultRenderer from '../../components/AIResultRenderer';
 
 function BuyerPreferencePage() {
+  const fullAIExamples = useFullAIExamples();
+
   const [bidderName, setBidderName] = useState('');
   const [categoriesOfInterest, setCategoriesOfInterest] = useState('');
   const [historyText, setHistoryText] = useState('');
@@ -57,18 +61,18 @@ function BuyerPreferencePage() {
       </div>
       <div className="ai-form">
         <h3 className="ai-form-title">Bidder &amp; History</h3>
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} data-full-ai-workspace="BuyerPreferencePage"><FullAIExamples controller={fullAIExamples} disabled={Boolean(loading)} />
           <div className="form-row">
             <div className="form-group">
               <label>Bidder Name</label>
               <input className="form-input" value={bidderName}
-                onChange={(e) => setBidderName(e.target.value)} required />
+                onChange={(e) => setBidderName(e.target.value)} required data-full-ai-field={fullAIExamples.bind({ current: bidderName, change: (e) => setBidderName(e.target.value), label: "bidderName", manual: false, json: false, sample: '' }, "p1-2129", undefined)} />
             </div>
             <div className="form-group">
               <label>Self-declared Interests (comma separated)</label>
               <input className="form-input" value={categoriesOfInterest}
                 onChange={(e) => setCategoriesOfInterest(e.target.value)}
-                placeholder="Old Masters, Asian Art, Sculpture" />
+                placeholder="Old Masters, Asian Art, Sculpture" data-full-ai-field={fullAIExamples.bind({ current: categoriesOfInterest, change: (e) => setCategoriesOfInterest(e.target.value), label: "categoriesOfInterest", manual: false, json: false, sample: '' }, "p1-2399", undefined)} />
             </div>
           </div>
           <div className="form-group">
@@ -76,7 +80,7 @@ function BuyerPreferencePage() {
             <textarea className="form-textarea" rows={6}
               value={historyText}
               onChange={(e) => setHistoryText(e.target.value)}
-              placeholder={'Tang Horse Bronze|Asian Art|14000|2024-09-12\nMing Vase|Asian Art|22000|2025-02-03'} />
+              placeholder={'Tang Horse Bronze|Asian Art|14000|2024-09-12\nMing Vase|Asian Art|22000|2025-02-03'} data-full-ai-field={fullAIExamples.bind({ current: historyText, change: (e) => setHistoryText(e.target.value), label: "historyText", manual: false, json: false, sample: 'Tang Horse Bronze|Asian Art|14000|2024-09-12\nMing Vase|Asian Art|22000|2025-02-03' }, "buyer-history", undefined)} />
           </div>
           {error && <div className="login-error">{error}</div>}
           <button type="submit" className="btn btn-ai" disabled={loading}>

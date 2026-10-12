@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const jwt = require('jsonwebtoken');
 const { callAI, persistAIResult } = require('../ai');
-const { JWT_SECRET } = require('../middleware/auth');
+const { JWT_SECRET, authenticateToken } = require('../middleware/auth');
 
 // Soft-auth: attach user when token is valid but never block (used for ai_results.user_id).
 const optionalAuth = (req, _res, next) => {
@@ -20,6 +20,16 @@ const optionalAuth = (req, _res, next) => {
 router.use(optionalAuth);
 
 const userId = (req) => (req.user ? (req.user.id || req.user.userId || null) : null);
+
+function sendAIError(err, res) {
+  if (/OPENROUTER_API_KEY|OpenRouter API error|fetch failed|network|timeout/i.test(err?.message || '')) {
+    return res.json({ success: false, result: {
+      status: 'Unavailable',
+      reason: 'The AI provider is unavailable. No report was generated or saved. Check the server provider configuration and try again.',
+    } });
+  }
+  return res.status(500).json({ success: false, error: 'The AI request could not be completed.' });
+}
 
 // POST /lot-description
 router.post('/lot-description', async (req, res) => {
@@ -59,7 +69,7 @@ Additional Notes: ${notes || 'None'}`;
     res.json({ success: true, result, saved_id: saved && saved.id });
   } catch (err) {
     console.error('AI lot description error:', err);
-    res.status(500).json({ success: false, error: err.message });
+    sendAIError(err, res);
   }
 });
 
@@ -104,7 +114,7 @@ Dimensions: ${dimensions || 'Not specified'}`;
     res.json({ success: true, result, saved_id: saved && saved.id });
   } catch (err) {
     console.error('AI valuation error:', err);
-    res.status(500).json({ success: false, error: err.message });
+    sendAIError(err, res);
   }
 });
 
@@ -149,7 +159,7 @@ Medium: ${medium || 'Not specified'}`;
     res.json({ success: true, result, saved_id: saved && saved.id });
   } catch (err) {
     console.error('AI authenticity error:', err);
-    res.status(500).json({ success: false, error: err.message });
+    sendAIError(err, res);
   }
 });
 
@@ -192,7 +202,7 @@ Estimate: $${estimate_low ? estimate_low.toLocaleString() : 'TBD'} - $${estimate
     res.json({ success: true, result, saved_id: saved && saved.id });
   } catch (err) {
     console.error('AI marketing error:', err);
-    res.status(500).json({ success: false, error: err.message });
+    sendAIError(err, res);
   }
 });
 
@@ -241,7 +251,7 @@ ${bidderSummary || 'No bidder data provided'}`;
     res.json({ success: true, result, saved_id: saved && saved.id });
   } catch (err) {
     console.error('AI buyer matching error:', err);
-    res.status(500).json({ success: false, error: err.message });
+    sendAIError(err, res);
   }
 });
 
@@ -288,7 +298,7 @@ ${lots || 'No past lots provided. Use general market knowledge.'}`;
     res.json({ success: true, result, saved_id: saved && saved.id });
   } catch (err) {
     console.error('AI similarity matcher error:', err);
-    res.status(500).json({ success: false, error: err.message });
+    sendAIError(err, res);
   }
 });
 
@@ -336,7 +346,7 @@ ${bidLines || 'No bids logged yet.'}`;
     res.json({ success: true, result, saved_id: saved && saved.id });
   } catch (err) {
     console.error('AI bidding analytics error:', err);
-    res.status(500).json({ success: false, error: err.message });
+    sendAIError(err, res);
   }
 });
 
@@ -383,7 +393,7 @@ ${publications || 'Not provided'}`;
     res.json({ success: true, result, saved_id: saved && saved.id });
   } catch (err) {
     console.error('AI provenance verification error:', err);
-    res.status(500).json({ success: false, error: err.message });
+    sendAIError(err, res);
   }
 });
 
@@ -421,7 +431,7 @@ ${english_description || 'No description provided'}`;
     res.json({ success: true, result, saved_id: saved && saved.id });
   } catch (err) {
     console.error('AI multi-language catalog error:', err);
-    res.status(500).json({ success: false, error: err.message });
+    sendAIError(err, res);
   }
 });
 
@@ -468,7 +478,7 @@ ${photo_notes || 'Not provided'}`;
     res.json({ success: true, result, saved_id: saved && saved.id });
   } catch (err) {
     console.error('AI condition report data error:', err);
-    res.status(500).json({ success: false, error: err.message });
+    sendAIError(err, res);
   }
 });
 
@@ -511,7 +521,7 @@ ${history || 'No history provided.'}`;
     res.json({ success: true, result, saved_id: saved && saved.id });
   } catch (err) {
     console.error('AI buyer preference predictor error:', err);
-    res.status(500).json({ success: false, error: err.message });
+    sendAIError(err, res);
   }
 });
 
@@ -553,7 +563,7 @@ Owner use: ${owner_use || 'private collection display'}`;
     res.json({ success: true, result, saved_id: saved && saved.id });
   } catch (err) {
     console.error('AI insurance valuation error:', err);
-    res.status(500).json({ success: false, error: err.message });
+    sendAIError(err, res);
   }
 });
 
@@ -592,7 +602,7 @@ Notes: ${current_photo_notes || 'None'}`;
     res.json({ success: true, result, saved_id: saved && saved.id });
   } catch (err) {
     console.error('AI photo enhancement plan error:', err);
-    res.status(500).json({ success: false, error: err.message });
+    sendAIError(err, res);
   }
 });
 
@@ -642,24 +652,24 @@ ${salesSummary || 'No recent sales data provided - please provide general market
     res.json({ success: true, result, saved_id: saved && saved.id });
   } catch (err) {
     console.error('AI market trends error:', err);
-    res.status(500).json({ success: false, error: err.message });
+    sendAIError(err, res);
   }
 });
 
 // GET /history — paginated ai_results history (any feature, optional filter).
 const { pool } = require('../db');
-router.get('/history', async (req, res) => {
+router.get('/history', authenticateToken, async (req, res) => {
   try {
     const page = Math.max(1, parseInt(req.query.page) || 1);
     const limit = Math.min(100, Math.max(1, parseInt(req.query.limit) || 20));
     const offset = (page - 1) * limit;
     const feature = req.query.feature ? String(req.query.feature) : null;
 
-    const params = [];
-    let where = '';
+    const params = [req.user.id];
+    let where = 'WHERE user_id = $1';
     if (feature) {
       params.push(feature);
-      where = `WHERE feature = $${params.length}`;
+      where += ` AND feature = $${params.length}`;
     }
 
     const countRes = await pool.query(
@@ -726,10 +736,13 @@ async function callAIOr503(systemPrompt, userPrompt, options) {
 
 function send503OrError(err, res, label) {
   if (err && err.statusCode === 503) {
-    return res.status(503).json({ error: err.message, missing: err.missing || 'OPENROUTER_API_KEY' });
+    return res.json({ success: false, result: {
+      status: 'Unavailable',
+      reason: 'The AI provider is unavailable. No report was generated or saved. Check OPENROUTER_API_KEY on the server and try again.',
+    } });
   }
   console.error(`AI ${label} error:`, err);
-  return res.status(500).json({ success: false, error: err && err.message ? err.message : String(err) });
+  return sendAIError(err, res);
 }
 
 // POST /dynamic-reserve-pricing — AI-driven dynamic reserve recommendation.
@@ -906,9 +919,14 @@ router.post('/external-auction-search', async (req, res) => {
   ];
   const available = providers.filter(p => !!process.env[p.env]);
   if (available.length === 0) {
-    return res.status(503).json({
-      error: 'External auction search unavailable. No provider credentials configured.',
-      missing: providers.map(p => p.env).join(','),
+    return res.json({
+      success: false,
+      result: {
+        status: 'Unavailable',
+        reason: 'External auction search has no configured provider credentials. No search was performed.',
+        required_configuration: providers.map(p => p.env),
+        results: [],
+      },
     });
   }
   const { query, category, max_results } = req.body || {};
@@ -933,9 +951,12 @@ router.post('/external-auction-search', async (req, res) => {
 // rather than calling a live carrier (no SDK dependency added).
 router.post('/insurance-policy-recommendation', async (req, res) => {
   if (!process.env.INSURANCE_API_KEY) {
-    return res.status(503).json({
-      error: 'Insurance integration unavailable. INSURANCE_API_KEY not configured.',
-      missing: 'INSURANCE_API_KEY',
+    return res.json({
+      success: false,
+      result: {
+        status: 'Unavailable',
+        reason: 'Insurance integration is not configured. No policy was recommended or saved. Set INSURANCE_API_KEY on the server.',
+      },
     });
   }
   try {

@@ -1,8 +1,12 @@
+
+import FullAIExamples, { useFullAIExamples } from "../../components/FullAIExamples.jsx";
 import React, { useState } from 'react';
 import api from '../../api';
 import AIResultRenderer from '../../components/AIResultRenderer';
 
 function ProvenanceVerificationPage() {
+  const fullAIExamples = useFullAIExamples();
+
   const [form, setForm] = useState({
     title: '',
     artist: '',
@@ -41,22 +45,22 @@ function ProvenanceVerificationPage() {
       </div>
       <div className="ai-form">
         <h3 className="ai-form-title">Item &amp; Provenance Chain</h3>
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} data-full-ai-workspace="ProvenanceVerificationPage"><FullAIExamples controller={fullAIExamples} disabled={Boolean(loading)} />
           <div className="form-row">
             <div className="form-group">
               <label>Title</label>
               <input className="form-input" value={form.title}
-                onChange={(e) => setField('title', e.target.value)} required />
+                onChange={(e) => setField('title', e.target.value)} required data-full-ai-field={fullAIExamples.bind({ current: form.title, change: (e) => setField('title', e.target.value), label: "form.title", manual: false, json: false, sample: '' }, "p1-1507", undefined)} />
             </div>
             <div className="form-group">
               <label>Artist / Maker</label>
               <input className="form-input" value={form.artist}
-                onChange={(e) => setField('artist', e.target.value)} />
+                onChange={(e) => setField('artist', e.target.value)} data-full-ai-field={fullAIExamples.bind({ current: form.artist, change: (e) => setField('artist', e.target.value), label: "form.artist", manual: false, json: false, sample: '' }, "p1-1754", undefined)} />
             </div>
             <div className="form-group">
               <label>Category</label>
               <select className="form-select" value={form.category}
-                onChange={(e) => setField('category', e.target.value)}>
+                onChange={(e) => setField('category', e.target.value)} data-full-ai-field={fullAIExamples.bind({ current: form.category, change: (e) => setField('category', e.target.value), label: "form.category", manual: false, json: false, sample: 'Fine Art' }, "p1-1988", undefined)}>
                 {['Fine Art', 'Antiques', 'Sculptures', 'Asian Art',
                   'Old Masters', 'Contemporary Art', 'Decorative Arts',
                   'Books & Manuscripts', 'Jewelry'].map((c) => <option key={c}>{c}</option>)}
@@ -68,19 +72,19 @@ function ProvenanceVerificationPage() {
             <textarea className="form-textarea" rows={5}
               value={form.claimed_provenance}
               onChange={(e) => setField('claimed_provenance', e.target.value)}
-              placeholder={'1947 - Galerie X, Paris\n1962 - Private collection (USA)\n2001 - Christie\'s NY, lot 89'} />
+              placeholder={'1947 - Galerie X, Paris\n1962 - Private collection (USA)\n2001 - Christie\'s NY, lot 89'} data-full-ai-field={fullAIExamples.bind({ current: form.claimed_provenance, change: (e) => setField('claimed_provenance', e.target.value), label: "form.claimed_provenance", manual: false, json: false, sample: '' }, "p1-2512", undefined)} />
           </div>
           <div className="form-group">
             <label>Exhibition History</label>
             <textarea className="form-textarea" rows={3}
               value={form.exhibition_history}
-              onChange={(e) => setField('exhibition_history', e.target.value)} />
+              onChange={(e) => setField('exhibition_history', e.target.value)} data-full-ai-field={fullAIExamples.bind({ current: form.exhibition_history, change: (e) => setField('exhibition_history', e.target.value), label: "form.exhibition_history", manual: false, json: false, sample: '' }, "exhibition-history", undefined)} />
           </div>
           <div className="form-group">
             <label>Publications / Catalogue Raisonné references</label>
             <textarea className="form-textarea" rows={3}
               value={form.publications}
-              onChange={(e) => setField('publications', e.target.value)} />
+              onChange={(e) => setField('publications', e.target.value)} data-full-ai-field={fullAIExamples.bind({ current: form.publications, change: (e) => setField('publications', e.target.value), label: "form.publications", manual: false, json: false, sample: '' }, "p1-3230", undefined)} />
           </div>
           {error && <div className="login-error">{error}</div>}
           <button type="submit" className="btn btn-ai" disabled={loading}>

@@ -96,7 +96,8 @@ app.use('/api/conditions', require('./routes/conditions'));
 app.use('/api/storage', require('./routes/storage'));
 app.use('/api/compliance', require('./routes/compliance'));
 app.use('/api/reports', require('./routes/reports'));
-if (process.env.ENABLE_EXPERIMENTAL_AI === 'true') app.use('/api/ai', aiRateLimiter, require('./routes/ai'));
+// Native AI pages call these routes directly; keep their API mounted in every environment.
+app.use('/api/ai', aiRateLimiter, require('./routes/ai'));
 app.use('/api/runtime-ai', require('./routes/runtimeAi'));
 app.use('/api/photography', require('./routes/photography'));
 app.use('/api/catalog', require('./routes/catalog'));
@@ -115,6 +116,14 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
+
+// Advisory AI reports only; native execution and approval routes stay unchanged.
+const aiWorkspaceSupport = require("./aiWorkspaceAdapters.cjs");
+const aiWorkspaceDatabase = require("./db.js").pool;
+app.use('/api/report-workspace', require("./aiWorkspace.cjs").createAIWorkspaceRouter({
+  pool: aiWorkspaceDatabase, authenticateToken: require("./middleware/auth.js").authenticateToken,
+  aiRateLimiter: aiWorkspaceSupport.createWorkspaceLimiter(), features: require("./aiWorkspaceFeatures.json"),
+}));
 httpServer.listen(PORT, () => {
   console.log(`Auction House backend running on port ${PORT}`);
   console.log(`CORS allowed origins: ${ALLOWED_ORIGINS.join(', ')}`);

@@ -5,6 +5,7 @@ function renderValue(value, depth = 0) {
   if (typeof value === 'boolean') return <span className={`status-badge ${value ? 'active' : 'pending'}`}>{value ? 'Yes' : 'No'}</span>;
   if (typeof value === 'number') return <span className="ai-val-number">{value.toLocaleString()}</span>;
   if (typeof value === 'string') {
+    if (value === '') return <span className="ai-val-null">Empty string</span>;
     if (value.length > 200) {
       return <p className="ai-val-text">{value}</p>;
     }
@@ -12,6 +13,10 @@ function renderValue(value, depth = 0) {
   }
   if (Array.isArray(value)) {
     if (value.length === 0) return <span className="ai-val-null">None</span>;
+    if (value.every(item => item && typeof item === 'object' && !Array.isArray(item))) {
+      const columns = [...new Set(value.flatMap(item => Object.keys(item)))];
+      return <div className="ai-report-table-wrap"><table className="ai-report-table"><thead><tr>{columns.map(key => <th key={key}>{key.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase())}</th>)}</tr></thead><tbody>{value.map((item, index) => <tr key={index}>{columns.map(key => <td key={key}>{renderValue(item[key], depth + 1)}</td>)}</tr>)}</tbody></table></div>;
+    }
     if (typeof value[0] === 'string' || typeof value[0] === 'number') {
       return (
         <ul className="ai-result-list">
@@ -64,7 +69,7 @@ function renderObject(obj, depth = 0) {
 }
 
 function parseContent(raw) {
-  if (!raw) return null;
+  if (raw === null || raw === undefined) return null;
 
   // Try to parse as JSON
   if (typeof raw === 'string') {
@@ -120,7 +125,7 @@ function parseTextSections(text) {
 }
 
 function AIResultRenderer({ result, title }) {
-  if (!result) return null;
+  if (result === null || result === undefined) return null;
 
   // Extract the actual content
   let content = result;
@@ -137,9 +142,9 @@ function AIResultRenderer({ result, title }) {
         <h3>{title || 'AI Analysis Result'}</h3>
       </div>
       <div className="ai-result-content">
-        {parsed ? (
+        {parsed !== null ? (
           // Render structured JSON beautifully
-          renderObject(parsed)
+          renderValue(parsed)
         ) : (
           // Render as formatted text
           (() => {

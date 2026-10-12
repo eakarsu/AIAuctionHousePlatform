@@ -1,8 +1,12 @@
+
+import FullAIExamples, { useFullAIExamples } from "../../components/FullAIExamples.jsx";
 import React, { useState } from 'react';
 import api from '../../api';
 import AIResultRenderer from '../../components/AIResultRenderer';
 
 function DynamicReservePricingPage() {
+  const fullAIExamples = useFullAIExamples();
+
   const [form, setForm] = useState({
     title: '',
     category: 'Fine Art',
@@ -51,19 +55,19 @@ function DynamicReservePricingPage() {
       </div>
       <div className="ai-form">
         <h3 className="ai-form-title">Lot details</h3>
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} data-full-ai-workspace="DynamicReservePricingPage"><FullAIExamples controller={fullAIExamples} disabled={Boolean(loading)} />
           <div className="form-group">
             <label>Title</label>
-            <input className="form-input" value={form.title} onChange={(e) => setField('title', e.target.value)} required />
+            <input className="form-input" value={form.title} onChange={(e) => setField('title', e.target.value)} required data-full-ai-field={fullAIExamples.bind({ current: form.title, change: (e) => setField('title', e.target.value), label: "form.title", manual: false, json: false, sample: '' }, "p1-1856", undefined)} />
           </div>
           <div className="form-row">
             <div className="form-group">
               <label>Category</label>
-              <input className="form-input" value={form.category} onChange={(e) => setField('category', e.target.value)} />
+              <input className="form-input" value={form.category} onChange={(e) => setField('category', e.target.value)} data-full-ai-field={fullAIExamples.bind({ current: form.category, change: (e) => setField('category', e.target.value), label: "form.category", manual: false, json: false, sample: 'Fine Art' }, "p1-2116", undefined)} />
             </div>
             <div className="form-group">
               <label>Condition</label>
-              <select className="form-select" value={form.condition} onChange={(e) => setField('condition', e.target.value)}>
+              <select className="form-select" value={form.condition} onChange={(e) => setField('condition', e.target.value)} data-full-ai-field={fullAIExamples.bind({ current: form.condition, change: (e) => setField('condition', e.target.value), label: "form.condition", manual: false, json: false, sample: 'Good' }, "p1-2339", undefined)}>
                 <option>Excellent</option>
                 <option>Good</option>
                 <option>Fair</option>
@@ -74,15 +78,15 @@ function DynamicReservePricingPage() {
           <div className="form-row">
             <div className="form-group">
               <label>Estimate Low (USD)</label>
-              <input type="number" className="form-input" value={form.estimate_low} onChange={(e) => setField('estimate_low', e.target.value)} />
+              <input type="number" className="form-input" value={form.estimate_low} onChange={(e) => setField('estimate_low', e.target.value)} data-full-ai-field={fullAIExamples.bind({ current: form.estimate_low, change: (e) => setField('estimate_low', e.target.value), label: "form.estimate_low", manual: false, json: false, sample: '' }, "p1-2808", undefined)} />
             </div>
             <div className="form-group">
               <label>Estimate High (USD)</label>
-              <input type="number" className="form-input" value={form.estimate_high} onChange={(e) => setField('estimate_high', e.target.value)} />
+              <input type="number" className="form-input" value={form.estimate_high} onChange={(e) => setField('estimate_high', e.target.value)} data-full-ai-field={fullAIExamples.bind({ current: form.estimate_high, change: (e) => setField('estimate_high', e.target.value), label: "form.estimate_high", manual: false, json: false, sample: '' }, "p1-3063", undefined)} />
             </div>
             <div className="form-group">
               <label>Consignor Minimum (USD)</label>
-              <input type="number" className="form-input" value={form.consignor_min} onChange={(e) => setField('consignor_min', e.target.value)} />
+              <input type="number" className="form-input" value={form.consignor_min} onChange={(e) => setField('consignor_min', e.target.value)} data-full-ai-field={fullAIExamples.bind({ current: form.consignor_min, change: (e) => setField('consignor_min', e.target.value), label: "form.consignor_min", manual: false, json: false, sample: '' }, "p1-3324", undefined)} />
             </div>
           </div>
           {error && <div className="login-error">{error}</div>}

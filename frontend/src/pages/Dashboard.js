@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import api from '../api';
+import api, { listRows } from '../api';
 
 const featureCards = [
   { icon: '🤝', title: 'Consignor Management', desc: 'Manage consignors, contracts, and commissions', path: '/consignors', countKey: 'consignors' },
@@ -69,28 +69,28 @@ function Dashboard() {
         }
 
         if (bidders.status === 'fulfilled') {
-          const bidderCount = Array.isArray(bidders.value.data) ? bidders.value.data.length : 0;
+          const bidderCount = listRows(bidders.value.data).length;
           setStats(prev => ({ ...prev, registeredBidders: bidderCount }));
         }
 
         const c = {};
-        if (consignors.status === 'fulfilled') c.consignors = Array.isArray(consignors.value.data) ? consignors.value.data.length : 0;
-        if (items.status === 'fulfilled') c.items = Array.isArray(items.value.data) ? items.value.data.length : 0;
-        if (auctions.status === 'fulfilled') c.auctions = Array.isArray(auctions.value.data) ? auctions.value.data.length : 0;
-        if (bidders.status === 'fulfilled') c.bidders = Array.isArray(bidders.value.data) ? bidders.value.data.length : 0;
-        if (bids.status === 'fulfilled') c.bids = Array.isArray(bids.value.data) ? bids.value.data.length : 0;
-        if (invoices.status === 'fulfilled') c.invoices = Array.isArray(invoices.value.data) ? invoices.value.data.length : 0;
-        if (shipping.status === 'fulfilled') c.shipping = Array.isArray(shipping.value.data) ? shipping.value.data.length : 0;
-        if (conditions.status === 'fulfilled') c.conditions = Array.isArray(conditions.value.data) ? conditions.value.data.length : 0;
-        if (storage.status === 'fulfilled') c.storage = Array.isArray(storage.value.data) ? storage.value.data.length : 0;
-        if (compliance.status === 'fulfilled') c.compliance = Array.isArray(compliance.value.data) ? compliance.value.data.length : 0;
-        if (photography.status === 'fulfilled') c.photography = Array.isArray(photography.value.data) ? photography.value.data.length : 0;
-        if (catalog.status === 'fulfilled') c.catalog = Array.isArray(catalog.value.data) ? catalog.value.data.length : 0;
-        if (campaigns.status === 'fulfilled') c.campaigns = Array.isArray(campaigns.value.data) ? campaigns.value.data.length : 0;
-        if (payments.status === 'fulfilled') c.payments = Array.isArray(payments.value.data) ? payments.value.data.length : 0;
-        if (unsoldLots.status === 'fulfilled') c.unsoldLots = Array.isArray(unsoldLots.value.data) ? unsoldLots.value.data.length : 0;
-        if (appraisals.status === 'fulfilled') c.appraisals = Array.isArray(appraisals.value.data) ? appraisals.value.data.length : 0;
-        if (estates.status === 'fulfilled') c.estates = Array.isArray(estates.value.data) ? estates.value.data.length : 0;
+        if (consignors.status === 'fulfilled') c.consignors = listRows(consignors.value.data).length;
+        if (items.status === 'fulfilled') c.items = listRows(items.value.data).length;
+        if (auctions.status === 'fulfilled') c.auctions = listRows(auctions.value.data).length;
+        if (bidders.status === 'fulfilled') c.bidders = listRows(bidders.value.data).length;
+        if (bids.status === 'fulfilled') c.bids = listRows(bids.value.data).length;
+        if (invoices.status === 'fulfilled') c.invoices = listRows(invoices.value.data).length;
+        if (shipping.status === 'fulfilled') c.shipping = listRows(shipping.value.data).length;
+        if (conditions.status === 'fulfilled') c.conditions = listRows(conditions.value.data).length;
+        if (storage.status === 'fulfilled') c.storage = listRows(storage.value.data).length;
+        if (compliance.status === 'fulfilled') c.compliance = listRows(compliance.value.data).length;
+        if (photography.status === 'fulfilled') c.photography = listRows(photography.value.data).length;
+        if (catalog.status === 'fulfilled') c.catalog = listRows(catalog.value.data).length;
+        if (campaigns.status === 'fulfilled') c.campaigns = listRows(campaigns.value.data).length;
+        if (payments.status === 'fulfilled') c.payments = listRows(payments.value.data).length;
+        if (unsoldLots.status === 'fulfilled') c.unsoldLots = listRows(unsoldLots.value.data).length;
+        if (appraisals.status === 'fulfilled') c.appraisals = listRows(appraisals.value.data).length;
+        if (estates.status === 'fulfilled') c.estates = listRows(estates.value.data).length;
         setCounts(c);
       } catch (err) {
         console.error('Dashboard fetch error:', err);

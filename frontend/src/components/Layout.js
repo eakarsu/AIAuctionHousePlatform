@@ -1,3 +1,4 @@
+import AIReportLibrary from "./AIReportLibrary";
 import React from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 
@@ -110,7 +111,7 @@ function Layout({ children }) {
             <span>🚪</span> Logout
           </button>
         </div>
-      </aside>
+      <AIReportLibrary /></aside>
       <main className="main-content">
         <div className="page-container">
           {children}

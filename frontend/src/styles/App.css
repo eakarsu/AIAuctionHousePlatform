@@ -559,16 +559,17 @@ h1, h2, h3, h4, h5, h6 {
 
 .detail-panel {
   position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  width: 480px;
-  max-width: 90vw;
+  top: 50%;
+  left: 50%;
+  width: min(680px, calc(100vw - 40px));
+  max-height: min(85vh, 820px);
   background: var(--card-bg);
+  border-radius: var(--radius-lg);
   box-shadow: var(--shadow-xl);
   z-index: 201;
   overflow-y: auto;
-  animation: slideInRight 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: translate(-50%, -50%);
+  animation: detailScaleIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .detail-panel-header {
@@ -627,6 +628,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .detail-panel-actions {
   display: flex;
+  justify-content: center;
   gap: 12px;
   padding: 20px 24px;
   border-top: 1px solid var(--border);
@@ -1110,6 +1112,11 @@ h1, h2, h3, h4, h5, h6 {
 @keyframes slideInRight {
   from { transform: translateX(100%); }
   to { transform: translateX(0); }
+}
+
+@keyframes detailScaleIn {
+  from { opacity: 0; transform: translate(-50%, -50%) scale(0.95); }
+  to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
 }
 
 @keyframes scaleIn {

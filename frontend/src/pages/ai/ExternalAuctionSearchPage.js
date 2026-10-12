@@ -1,8 +1,12 @@
+
+import FullAIExamples, { useFullAIExamples } from "../../components/FullAIExamples.jsx";
 import React, { useState } from 'react';
 import api from '../../api';
 import AIResultRenderer from '../../components/AIResultRenderer';
 
 function ExternalAuctionSearchPage() {
+  const fullAIExamples = useFullAIExamples();
+
   const [form, setForm] = useState({ query: '', category: '', max_results: 10 });
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -42,19 +46,19 @@ function ExternalAuctionSearchPage() {
       </div>
       <div className="ai-form">
         <h3 className="ai-form-title">Search</h3>
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} data-full-ai-workspace="ExternalAuctionSearchPage"><FullAIExamples controller={fullAIExamples} disabled={Boolean(loading)} />
           <div className="form-group">
             <label>Query</label>
-            <input className="form-input" value={form.query} onChange={(e) => setField('query', e.target.value)} required />
+            <input className="form-input" value={form.query} onChange={(e) => setField('query', e.target.value)} required data-full-ai-field={fullAIExamples.bind({ current: form.query, change: (e) => setField('query', e.target.value), label: "form.query", manual: false, json: false, sample: '' }, "p1-1752", undefined)} />
           </div>
           <div className="form-row">
             <div className="form-group">
               <label>Category</label>
-              <input className="form-input" value={form.category} onChange={(e) => setField('category', e.target.value)} />
+              <input className="form-input" value={form.category} onChange={(e) => setField('category', e.target.value)} data-full-ai-field={fullAIExamples.bind({ current: form.category, change: (e) => setField('category', e.target.value), label: "form.category", manual: false, json: false, sample: '' }, "p1-2012", undefined)} />
             </div>
             <div className="form-group">
               <label>Max Results</label>
-              <input type="number" className="form-input" value={form.max_results} onChange={(e) => setField('max_results', e.target.value)} />
+              <input type="number" className="form-input" value={form.max_results} onChange={(e) => setField('max_results', e.target.value)} data-full-ai-field={fullAIExamples.bind({ current: form.max_results, change: (e) => setField('max_results', e.target.value), label: "form.max_results", manual: false, json: false, sample: 10 }, "p1-2237", undefined)} />
             </div>
           </div>
           {error && <div className="login-error">{error}</div>}

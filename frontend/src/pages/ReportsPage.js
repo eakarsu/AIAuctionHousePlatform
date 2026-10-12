@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import api from '../api';
+import api, { listRows } from '../api';
 
 function ReportsPage() {
   const [financial, setFinancial] = useState(null);
@@ -14,7 +14,7 @@ function ReportsPage() {
           api.get('/reports/consignor-settlements'),
         ]);
         if (fin.status === 'fulfilled') setFinancial(fin.value.data);
-        if (set.status === 'fulfilled') setSettlements(Array.isArray(set.value.data) ? set.value.data : []);
+        if (set.status === 'fulfilled') setSettlements(listRows(set.value.data));
       } catch (err) { console.error(err); }
       setLoading(false);
     };

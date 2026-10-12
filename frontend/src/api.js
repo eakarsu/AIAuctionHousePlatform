@@ -27,3 +27,10 @@ api.interceptors.response.use(
 );
 
 export default api;
+
+// List endpoints return a bare array by default and { data, pagination } when paged.
+export function listRows(payload) {
+  if (Array.isArray(payload)) return payload;
+  if (payload && Array.isArray(payload.data)) return payload.data;
+  throw new TypeError('Expected an array of records from the list endpoint');
+}
