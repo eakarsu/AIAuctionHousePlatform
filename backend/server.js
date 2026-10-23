@@ -99,6 +99,7 @@ app.use('/api/reports', require('./routes/reports'));
 // Native AI pages call these routes directly; keep their API mounted in every environment.
 app.use('/api/ai', aiRateLimiter, require('./routes/ai'));
 app.use('/api/runtime-ai', require('./routes/runtimeAi'));
+app.use('/api/wave26b', require('./routes/wave26b'));
 app.use('/api/photography', require('./routes/photography'));
 app.use('/api/catalog', require('./routes/catalog'));
 app.use('/api/campaigns', require('./routes/campaigns'));
